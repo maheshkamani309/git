@@ -1,0 +1,8 @@
+stages:
+- test # Name of the process
+deploy: 
+    only:
+        - main # Repo name
+    script:
+      - apt-get update && apt-get install -y -qq lftp # Install lftp
+      - lftp -c "set ftp:ssl-allow no; open -u $DEVFTP_USER,$DEVFTP_PASS $DEVFTP_HOST; mirror -R $DEVFTP_SO $DEVFTP_DE --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/" # copy whole directory to the Provided FTP
